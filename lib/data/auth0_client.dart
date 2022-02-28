@@ -281,13 +281,11 @@ class Auth0Client {
   }
 
   Future<dynamic> managementAccessToken(
-      {required String scope,
-      required Map<String, String> params,
+      {required Map<String, String> params,
       required String clientSecret}) async {
     var payload = {
       'client_id': this.clientId,
       'client_secret': clientSecret,
-      "scope": params['scope'],
       "audience": params['audience'],
       "grant_type": 'client_credentials',
     };
@@ -300,7 +298,7 @@ class Auth0Client {
   /// [ref link]:
   Future<dynamic> getUserBySub(
       {required String sub, required String management_access_token}) async {
-    var res = await _dioWrapper.get('/v2/users/$sub',
+    var res = await _dioWrapper.get('/api/v2/users/$sub',
         options: Options(
             headers: {"Authorization": "Bearer $management_access_token"}));
     return res.data;
@@ -315,7 +313,7 @@ class Auth0Client {
       required dynamic params}) async {
     var payload = Map.from(params);
 
-    var res = await _dioWrapper.patch('/v2/users/$sub',
+    var res = await _dioWrapper.patch('/api/v2/users/$sub',
         body: payload,
         options: Options(headers: {
           "Authorization": "Bearer $management_access_token",
@@ -341,7 +339,7 @@ class Auth0Client {
       queryParameters["search_engine"] = "v3";
     }
 
-    var res = await _dioWrapper.get('/v2/users/',
+    var res = await _dioWrapper.get('/api/v2/users/',
         params: queryParameters,
         options: Options(headers: {
           "Authorization": "Bearer $management_access_token",
