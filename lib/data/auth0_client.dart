@@ -280,13 +280,29 @@ class Auth0Client {
     return res.data;
   }
 
+  Future<dynamic> managementAccessToken(
+      {required String scope,
+      required Map<String, String> params,
+      required String clientSecret}) async {
+    var payload = {
+      'client_id': this.clientId,
+      'client_secret': clientSecret,
+      "scope": params['scope'],
+      "audience": params['audience'],
+      "grant_type": 'client_credentials',
+    };
+    var res = await _dioWrapper.post('/oauth/token', body: payload);
+    return res.data;
+  }
+
   /// Get the Auth0User object with sub
   /// @returns a [Future]
   /// [ref link]:
   Future<dynamic> getUserBySub(
-      {required String sub, required String access_token}) async {
+      {required String sub, required String management_access_token}) async {
     var res = await _dioWrapper.get('/v2/users/$sub',
-        options: Options(headers: {"Authorization": "Bearer $access_token"}));
+        options: Options(
+            headers: {"Authorization": "Bearer $management_access_token"}));
     return res.data;
   }
 
@@ -295,14 +311,14 @@ class Auth0Client {
   /// [ref link]:
   Future<dynamic> updateUserBySub(
       {required String sub,
-      required String access_token,
+      required String management_access_token,
       required dynamic params}) async {
     var payload = Map.from(params);
 
     var res = await _dioWrapper.patch('/v2/users/$sub',
         body: payload,
         options: Options(headers: {
-          "Authorization": "Bearer $access_token",
+          "Authorization": "Bearer $management_access_token",
           "Content-Type": "application/json"
         }));
     return res.data;
@@ -312,7 +328,7 @@ class Auth0Client {
   /// @returns a [Future]
   /// [ref link]:
   Future<dynamic> getUsers(
-      {required String access_token,
+      {required String management_access_token,
       required String? uuid,
       required String? email}) async {
     Map<String, String> queryParameters = Map<String, String>();
@@ -328,7 +344,7 @@ class Auth0Client {
     var res = await _dioWrapper.get('/v2/users/',
         params: queryParameters,
         options: Options(headers: {
-          "Authorization": "Bearer $access_token",
+          "Authorization": "Bearer $management_access_token",
         }));
     return res.data;
   }
