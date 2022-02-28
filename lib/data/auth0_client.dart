@@ -278,4 +278,57 @@ class Auth0Client {
     var res = await _dioWrapper.get('/v2/logout', params: params);
     return res.data;
   }
+
+  /// Get the Auth0User object with sub
+  /// @returns a [Future]
+  /// [ref link]:
+  Future<dynamic> getUserBySub(
+      {required String sub, required String access_token}) async {
+    var res = await _dioWrapper.get('/v2/users/$sub',
+        options: Options(headers: {"Authorization": "Bearer $access_token"}));
+    return res.data;
+  }
+
+  /// Update the Auth0User object with sub
+  /// @returns a [Future]
+  /// [ref link]:
+  Future<dynamic> updateUserBySub(
+      {required String sub,
+      required String access_token,
+      required dynamic params}) async {
+    var payload = Map.from(params);
+
+    var res = await _dioWrapper.patch('/v2/users/$sub',
+        body: payload,
+        options: Options(headers: {
+          "Authorization": "Bearer $access_token",
+          "Content-Type": "application/json"
+        }));
+    return res.data;
+  }
+
+  /// Seach users by email or uuid (user_metadata) a list of users matching a criteria
+  /// @returns a [Future]
+  /// [ref link]:
+  Future<dynamic> getUsers(
+      {required String access_token,
+      required String? uuid,
+      required String? email}) async {
+    Map<String, String> queryParameters = Map<String, String>();
+
+    if (uuid != null) {
+      queryParameters["q"] = "user_metadata.uuid:$uuid";
+      queryParameters["search_engine"] = "v3";
+    } else if (email != null) {
+      queryParameters["q"] = "email:$email";
+      queryParameters["search_engine"] = "v3";
+    }
+
+    var res = await _dioWrapper.get('/v2/users/',
+        params: queryParameters,
+        options: Options(headers: {
+          "Authorization": "Bearer $access_token",
+        }));
+    return res.data;
+  }
 }

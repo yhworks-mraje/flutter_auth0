@@ -54,9 +54,10 @@ class DioWrapper {
 
   /// DIO GET
   /// take [url], concrete route
-  Future<Response> get(String url, {Map<String, dynamic>? params}) async =>
+  Future<Response> get(String url,
+          {Map<String, dynamic>? params, Options? options}) async =>
       await dio
-          .get(url, queryParameters: params)
+          .get(url, queryParameters: params, options: options)
           .then((response) => response)
           .catchError((error) {
         handleError(error, _decoder);
@@ -64,8 +65,26 @@ class DioWrapper {
 
   /// DIO POST
   /// take [url], concrete route
-  Future<Response> post(String url, {body}) async =>
-      await dio.post(url, data: body).then((response) {
+  Future<Response> post(String url, {body, Options? options}) async =>
+      await dio.post(url, data: body, options: options).then((response) {
+        return response;
+      }).catchError((error) {
+        handleError(error, _decoder);
+      });
+
+  /// DIO PUT
+  /// take [url], concrete route
+  Future<Response> put(String url, {body, Options? options}) async =>
+      await dio.put(url, data: body, options: options).then((response) {
+        return response;
+      }).catchError((error) {
+        handleError(error, _decoder);
+      });
+
+  /// DIO PATCH
+  /// take [url], concrete route
+  Future<Response> patch(String url, {body, Options? options}) async =>
+      await dio.patch(url, data: body, options: options).then((response) {
         return response;
       }).catchError((error) {
         handleError(error, _decoder);
