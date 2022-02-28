@@ -170,8 +170,9 @@ class Auth0Client {
   /// Return user information using an access token
   /// Param [String] token user's access token
   /// Returns [Future] with user info
-  Future<dynamic> getUserInfo() async {
-    var res = await _dioWrapper.get('/userinfo');
+  Future<dynamic> getUserInfo({required String access_token}) async {
+    var res = await _dioWrapper.get('/userinfo',
+        options: Options(headers: {"Authorization": "Bearer $access_token"}));
     return res.data;
   }
 
