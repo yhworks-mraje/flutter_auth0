@@ -13,13 +13,13 @@ void handleError(DioError error, JsonDecoder _decoder) {
       var desc = error.response!.data["error_description"] ??
           error.response!.data["message"] ??
           error.response!.data["description"];
-      var statusCode = error.response!.statusCode;
-      var statusMessage = error.response!.statusMessage;
+      var status = error.response!.statusCode;
+      var statusMsg = error.response!.statusMessage;
       throw AuthException(
           name: err,
           description: desc,
-          status: statusCode,
-          statusMessage: statusMessage);
+          statusCode: status,
+          statusMessage: statusMsg);
     } else
       throw AuthException(description: error.error.toString());
   }
