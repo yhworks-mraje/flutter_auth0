@@ -339,7 +339,7 @@ class Auth0Client {
       queryParameters["search_engine"] = "v3";
     }
 
-    var res = await _dioWrapper.get('/api/v2/users/',
+    var res = await _dioWrapper.get('/api/v2/users',
         params: queryParameters,
         options: Options(headers: {
           "Authorization": "Bearer $management_access_token",
